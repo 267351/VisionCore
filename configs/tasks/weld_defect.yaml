@@ -1,0 +1,20 @@
+task:
+  name: "weld_defect"
+  type: "detect"
+  description: "焊缝缺陷检测 — 气孔、裂纹、咬边、未熔合、夹渣"
+
+data:
+  path: "data/weld_defect/"
+  train: "images/train"
+  val: "images/val"
+  nc: 5
+  names:
+    - porosity
+    - crack
+    - undercut
+    - lack_of_fusion
+    - slag_inclusion
+
+train:
+  epochs: 150
+  imgsz: 1280

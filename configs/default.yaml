@@ -1,0 +1,31 @@
+# VisionCore 全局默认训练参数
+# 所有任务共享此配置，task文件中的同名字段会覆盖此处
+
+model:
+  size: "n"          # n/s/m/l/x, nano最快
+  pretrained: true   # 从预训练权重开始
+
+train:
+  epochs: 100
+  batch: 16
+  imgsz: 640
+  device: 0          # GPU编号, -1为CPU
+  workers: 8
+  lr0: 0.01
+  patience: 50       # 早停轮数
+
+augment:
+  mosaic: 1.0
+  hsv_h: 0.015
+  hsv_s: 0.7
+  hsv_v: 0.4
+  degrees: 0.0
+  translate: 0.1
+  scale: 0.5
+  fliplr: 0.5
+
+export:
+  formats: ["onnx"]
+  imgsz: 640
+  half: false
+  dynamic: true

@@ -1,0 +1,19 @@
+task:
+  name: "rod_state"
+  type: "detect"
+  description: "焊条头状态识别 — 新焊条、半消耗、残头、涂层破损"
+
+data:
+  path: "data/rod_state/"
+  train: "images/train"
+  val: "images/val"
+  nc: 4
+  names:
+    - new_rod
+    - half_used
+    - stub_end
+    - damaged_coating
+
+train:
+  epochs: 100
+  imgsz: 640

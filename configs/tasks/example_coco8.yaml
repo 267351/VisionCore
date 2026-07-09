@@ -1,0 +1,14 @@
+task:
+  name: "example_coco8"
+  type: "detect"
+  description: "coco8验证任务 — 验证框架全链路"
+
+data:
+  path: "coco8.yaml"         # Ultralytics内置数据集，非本地路径
+  train: ""
+  val: ""
+  nc: 0                      # 由coco8.yaml自动确定
+  names: []
+
+train:
+  epochs: 3                  # 验证用，只跑3轮

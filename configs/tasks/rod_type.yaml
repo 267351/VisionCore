@@ -1,0 +1,19 @@
+task:
+  name: "rod_type"
+  type: "classify"
+  description: "焊条型号识别"
+
+data:
+  path: "data/rod_type/"
+  train: "images/train"
+  val: "images/val"
+  nc: 5
+  names:
+    - E6013
+    - E7018
+    - 309L_stainless
+    - ER5356_aluminum
+    - ER70S6
+
+train:
+  epochs: 100
