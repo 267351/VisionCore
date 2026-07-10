@@ -36,7 +36,7 @@ def main():
     model_size = args.model_size or cfg["model"]["size"]
 
     model_dir = Path(__file__).resolve().parent.parent / "models" / task_name
-    weight_path = model_dir / "train" / "weights" / "best.pt"
+    weight_path = model_dir / "weights" / "best.pt"
 
     if not weight_path.exists():
         logger.error("模型权重不存在: %s (请先运行 train.py)", weight_path)

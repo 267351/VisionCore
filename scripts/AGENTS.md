@@ -18,7 +18,7 @@
 - **Pattern**: Every script does `sys.path.insert(0, Path(__file__).parent)` then `from utils import ...`
 - **Config flow**: `load_config(task)` → CLI args override `cfg["train"]["epochs"]` etc. → pass to YOLO
 - **Model naming**: `yolov8{size}{suffix}.pt` where suffix is "" (detect), "-cls" (classify), "-seg" (segment)
-- **Output dir**: `models/{task_name}/` — YOLO creates `train/weights/best.pt` inside
+- **Output dir**: `models/{task_name}/` — YOLO creates `weights/best.pt` inside
 - **Error exit**: `sys.exit(1)` on missing weights files; `load_config` raises `FileNotFoundError`/`KeyError`
 - **No side effects in utils**: `config_loader.py` and `logger.py` are pure functions with no global state
 

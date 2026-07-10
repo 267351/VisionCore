@@ -71,7 +71,7 @@ def main():
 
     # 5. 模型权重路径
     if args.resume:
-        weight_path = model_dir / "train" / "weights" / "last.pt"
+        weight_path = model_dir / "weights" / "last.pt"
         if not weight_path.exists():
             logger.error("无法恢复训练: 未找到 last.pt (%s)", weight_path)
             sys.exit(1)
@@ -96,10 +96,9 @@ def main():
         "lr0": cfg["train"]["lr0"],
         "patience": cfg["train"]["patience"],
         "project": str(model_dir),
-        "name": "train",
+        "name": "weights",          # 直接放到 models/{task}/weights/
         "exist_ok": True,
         "resume": args.resume,
-        # 数据增强参数
         **cfg.get("augment", {}),
     }
 
@@ -111,7 +110,7 @@ def main():
 
     # 8. 训练完成，输出摘要
     logger.info("训练完成!")
-    logger.info("最佳模型: %s", model_dir / "train" / "weights" / "best.pt")
+    logger.info("最佳模型: %s", model_dir / "weights" / "best.pt")
     if hasattr(results, "results_dict"):
         metrics = results.results_dict
         logger.info("mAP50: %.4f", metrics.get("metrics/mAP50(B)", 0))

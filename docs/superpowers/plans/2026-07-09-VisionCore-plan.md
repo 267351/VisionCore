@@ -1543,7 +1543,7 @@ Expected: 全部 11 个测试通过。
 uv run python scripts/train.py --task example_coco8 --epochs 1 --device -1
 ```
 
-Expected: 训练不报错，输出中包含 `Results saved to` 路径，`models/example_coco8/train/weights/best.pt` 存在。
+Expected: 训练不报错，输出中包含 `Results saved to` 路径，`models/example_coco8/weights/best.pt` 存在。
 > **注意**: 使用 `--device -1` (CPU) 以确保在没有 GPU 的环境中也能运行。有 GPU 时可去掉此参数。
 
 - [ ] **Step 3: coco8 评估验证**

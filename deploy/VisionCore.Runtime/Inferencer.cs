@@ -111,30 +111,51 @@ public class Inferencer : IDisposable
         return Postprocess(output, origWidth, origHeight);
     }
 
+    // letterbox 参数 — 由 Preprocess 计算，供 Postprocess 做坐标重映射
+    private float _letterboxScale = 1f;
+    private int _letterboxPadX = 0;
+    private int _letterboxPadY = 0;
+
     /// <summary>
-    /// 图片预处理: Resize → Normalize → 转为 float32 tensor [1, 3, H, W].
+    /// 图片预处理: Letterbox Resize → Normalize → 转为 float32 tensor [1, 3, H, W].
+    /// 与 YOLO Python 训练时的预处理对齐 (letterbox 保持宽高比 + 灰度填充)。
     /// </summary>
     private DenseTensor<float> Preprocess(Image<Rgb24> image)
     {
-        // Resize 到模型输入尺寸，保持宽高比并填充
+        int origWidth = image.Width;
+        int origHeight = image.Height;
+
+        // 1. 计算 letterbox 参数
+        float scale = Math.Min((float)_inputWidth / origWidth, (float)_inputHeight / origHeight);
+        int newW = (int)(origWidth * scale);
+        int newH = (int)(origHeight * scale);
+        int padX = (_inputWidth - newW) / 2;
+        int padY = (_inputHeight - newH) / 2;
+
+        _letterboxScale = scale;
+        _letterboxPadX = padX;
+        _letterboxPadY = padY;
+
+        // 2. Resize 保持宽高比 → 居中填充灰度 114 (YOLO 默认)
         image.Mutate(x => x.Resize(new ResizeOptions
         {
-            Size = new Size(_inputWidth, _inputHeight),
-            Mode = ResizeMode.Stretch // YOLO 使用 letterbox，简化处理用 Stretch
+            Size = new Size(newW, newH),
+            Mode = ResizeMode.Stretch
         }));
+
+        using var canvas = new Image<Rgb24>(_inputWidth, _inputHeight, new Rgb24(114, 114, 114));
+        canvas.Mutate(x => x.DrawImage(image, new Point(padX, padY), 1f));
 
         int channels = 3;
         var tensor = new DenseTensor<float>(new[] { 1, channels, _inputHeight, _inputWidth });
 
-        image.ProcessPixelRows(accessor =>
+        canvas.ProcessPixelRows(accessor =>
         {
             for (int y = 0; y < _inputHeight; y++)
             {
                 var row = accessor.GetRowSpan(y);
                 for (int x = 0; x < _inputWidth; x++)
                 {
-                    // ImageSharp: Rgb24 → R=0, G=1, B=2
-                    // YOLO 期望 RGB 顺序，像素值归一化到 [0, 1]
                     tensor[0, 0, y, x] = row[x].R / 255f;
                     tensor[0, 1, y, x] = row[x].G / 255f;
                     tensor[0, 2, y, x] = row[x].B / 255f;
@@ -189,10 +210,10 @@ public class Inferencer : IDisposable
                 ClassName = _classNames[maxClassId],
                 ClassId = maxClassId,
                 Confidence = maxConf,
-                X = cx,
-                Y = cy,
-                Width = w,
-                Height = h
+                X = _letterboxScale == 1f ? cx : (cx * _inputWidth - _letterboxPadX) / (_inputWidth * _letterboxScale),
+                Y = _letterboxScale == 1f ? cy : (cy * _inputHeight - _letterboxPadY) / (_inputHeight * _letterboxScale),
+                Width = w / _letterboxScale,
+                Height = h / _letterboxScale
             });
         }
 

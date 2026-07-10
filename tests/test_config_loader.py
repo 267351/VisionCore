@@ -6,9 +6,6 @@ from pathlib import Path
 import pytest
 import yaml
 
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
-
 from utils.config_loader import load_config, _deep_merge, _validate_task_config, is_builtin_dataset
 
 
