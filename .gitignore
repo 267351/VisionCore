@@ -9,11 +9,24 @@ venv/
 data/
 models/
 
+# Downloaded datasets & weights
+datasets/
+runs/
+*.pt
+*.onnx
+.cache/
+
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+
+# Build outputs
+obj/
+bin/
+*.user
+*.suo
 
 # OS
 .DS_Store
